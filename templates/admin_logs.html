@@ -1,0 +1,69 @@
+<!-- Admin SMS Logs Page Template -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloudi Admin - SMS Logs ☁️</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 🌙 Theme Toggle -->
+  <div class="theme-toggle-container">
+    <button id="themeToggle" class="theme-toggle">🌙</button>
+  </div>
+
+  <div class="admin-sms-log">
+    <h2>📨 SMS Logs - Admin View</h2>
+    {% if sms_logs %}
+    <table>
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Phone</th>
+          <th>Message</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sms in sms_logs %}
+        <tr>
+          <td>{{ sms.timestamp }}</td>
+          <td>{{ sms.phone }}</td>
+          <td>{{ sms.message }}</td>
+          <td>
+            <form action="/admin/delete/{{ loop.index0 }}" method="POST" onsubmit="return confirm('Delete this message?')">
+              <button type="submit" class="delete-btn">🗑️ Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+      <p>No SMS logs found.</p>
+    {% endif %}
+  </div>
+
+  <div class="centered-link">
+    <a href="/">⬅️ Back to Cloudi</a>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById('themeToggle');
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark', isDark);
+    toggleBtn.textContent = isDark ? '☀️' : '🌙';
+
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDarkMode = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDarkMode);
+      toggleBtn.textContent = isDarkMode ? '☀️' : '🌙';
+    });
+  </script>
+
+</body>
+</html>

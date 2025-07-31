@@ -1,0 +1,18 @@
+# Ignore environment secrets
+.env
+
+# Python cache files
+__pycache__/
+*.pyc
+
+# Log and history files
+sms_logs.json
+sms_history.json
+learning_log.json
+
+# Editor folders
+.vscode/
+.idea/
+
+# Other optional ignores
+*.log

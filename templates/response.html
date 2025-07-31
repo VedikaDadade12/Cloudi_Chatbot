@@ -1,0 +1,325 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloudi's Response ☁️</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  </head>
+
+  <body>
+
+    <h1 class="cloudi-title">Cloudi says... ☁️</h1>
+
+    <!-- Theme & Voice Toggles -->
+    <button type="button" id="theme-toggle" onclick="toggleDarkMode()">
+      🌙
+    </button>
+    <button id="voice-toggle" class="theme-toggle" type="button" onclick="toggleVoice()">🔊</button>
+    <button type="button" onclick="copyToClipboard()" class="copy-btn" title="Copy Cloudi's answer to clipboard">📋 Copy Answer</button>
+
+
+    <p class="cloudi-mode">
+      Cloudi is currently in <strong>{{ session['personality'].capitalize() }}</strong> mode 🎭
+    </p>
+
+    <!-- Typing -->
+    <div id="cloudi-typing" class="typing-dots">
+      Cloudi is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>
+    </div>
+
+    {% if not is_casual %}
+          <div class="chat-bubble user">
+            <div class="avatar">👩‍💻</div>
+            <div class="bubble-content">
+              <strong>You:</strong> {{ question }}
+              <p class="username">— You</p>
+            </div>
+          </div>
+
+          <div class="chat-bubble cloudi" id="cloudi-response">
+            <div class="avatar">🤖</div>
+            <div class="bubble-content">
+              <strong>Cloudi:</strong>
+              <div id="cloudi-answer">{{ answer | safe }}</div>
+              <p class="cloudi-signature">— Cloudi ☁️</p>
+            </div>
+          </div>
+    {% endif %} 
+
+
+    <div class="centered-link">
+      <a href="/">⬅️ Ask anything </a>
+    </div>
+
+    <!-- Collapsing Chat History -->
+    <div class="feedback">
+    <span>Was this helpful?</span>
+    <button type="button" onclick="rateFeedback('yes')">👍</button>
+    <button type="button" onclick="rateFeedback('no')">👎</button>
+  </div>
+  {% if history %}
+    <div class="actions-container">
+      <button type="button" id="toggle-history" onclick="toggleHistory()">📂 Show Chat History</button>
+    </div>
+  <div id="history-container" class="chat-container history-container">
+      <h2>🗂️ Your Chat History:</h2>
+      {% for entry in history %}
+        <div class="faq-item">
+          <div class="faq-question" onclick="toggleFaq(this)">
+            ▶️ <strong>You asked:</strong> {{ entry.question }}
+          </div>
+
+          <div class="faq-answer">
+            <div class="chat-bubble user">
+              <div class="avatar">👩‍💻</div>
+              <div class="bubble-content">
+                <strong>You:</strong> {{ entry.question }}
+              </div>
+            </div>
+
+            <div class="chat-bubble cloudi">
+              <div class="avatar">🤖</div>
+              <div class="bubble-content">
+                <strong>Cloudi:</strong>
+                {{ entry.answer }}
+              </div>
+            </div>
+          </div>
+       </div>
+
+            <div class="chat-bubble cloudi">
+              <div class="avatar">🤖</div>
+              <div class="bubble-content">
+                <strong>Cloudi:</strong>
+                {{ entry.answer }}
+              </div>
+            </div>
+          </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Actions -->
+    <div class="actions-center">
+
+      <script>
+        window.jspdf || console.error("jsPDF not loaded");
+      </script>
+
+      <button type="button" onclick="downloadPDF()">📄 Download Chat as PDF</button>
+      <button type="button" onclick="window.location='/reset'" class="clear-chat-btn">
+        🗑️ Clear Chat History
+      </button>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script>
+
+    const rawAnswer = document.getElementById("cloudi-answer").innerText;
+      const answerText = rawAnswer
+        .replace(/[^\w\s.,!?]/g, '')                             // remove weird punctuations but keep .,!? 
+        .replace(/\s+/g, ' ')                                    // clean extra spaces
+        .trim();
+
+    const speakCloudi = new SpeechSynthesisUtterance();
+
+    function speakAnswer(text) {
+    const voices = speechSynthesis.getVoices();
+    
+    // Try to pick a soft female voice
+    const preferredVoices = voices.filter(v =>
+      (v.name.toLowerCase().includes("female") || 
+      v.name.toLowerCase().includes("cloud") || 
+      v.name.toLowerCase().includes("samantha") || 
+      v.name.toLowerCase().includes("google us english") || 
+      v.name.toLowerCase().includes("zira")) &&
+      v.lang.startsWith("en")
+    );
+
+    const voice = preferredVoices.length > 0 ? preferredVoices[0] : voices.find(v => v.lang.startsWith("en"));
+
+    const speakCloudi = new SpeechSynthesisUtterance();
+    speakCloudi.text = text;
+    speakCloudi.voice = voice;
+    speakCloudi.rate = 0.9;
+    speakCloudi.pitch = 1.1; // Softer & a bit higher pitch
+    speakCloudi.volume = 1;
+
+    window.speechSynthesis.speak(speakCloudi);
+  }
+
+
+      function toggleVoice() {
+        const icon = document.getElementById("voice-toggle");
+        const isOff = localStorage.getItem("cloudiVoice") === "off";
+        localStorage.setItem("cloudiVoice", isOff ? "on" : "off");
+        icon.textContent = isOff ? "🔊" : "🔇";
+      }
+
+      function toggleDarkMode() {
+        document.body.classList.toggle('dark');
+        const isDark = document.body.classList.contains('dark');
+        localStorage.setItem('darkMode', isDark);
+        document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
+      }
+
+      function copyToClipboard() {
+    navigator.clipboard.writeText(answerText).then(() => {
+      alert("Copied to clipboard! ✅");
+          }).catch(err => {
+        alert("Oops! Couldn't copy. ❌");
+            });
+      }
+
+      function rateFeedback(option) {
+    if (option === 'yes') {
+      alert("Yay! I'm glad I helped! ☁️✨");
+        } else {
+        alert("Thanks for the feedback! I'll try to improve. 🤖💪");
+        }
+      }
+
+    function toggleHistory() {
+      const history = document.getElementById("history-container");
+      const btn = document.getElementById("toggle-history");
+
+      if (history.style.display === "none" || history.style.display === "") {
+        history.style.display = "block";
+        btn.textContent = "❌ Hide Chat History";
+      } else {
+        history.style.display = "none";
+        btn.textContent = "📂 Show Chat History";
+      }
+    }
+
+
+      function toggleFaq(element) {
+        const answer = element.nextElementSibling;
+        const isOpen = answer.style.display === "block";
+        answer.style.display = isOpen ? "none" : "block";
+        element.innerHTML = (isOpen ? "▶️ " : "🔽 ") + element.innerHTML.substring(2);
+      }
+
+    async function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text("Cloudi Chat History ☁️", 20, y);
+    y += 10;
+
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(12);
+
+    let chatHistory = [];
+    try {
+      chatHistory = JSON.parse('{{ history|tojson|safe }}');
+    } catch (e) {
+      console.error("Chat history export error:", e);
+    }
+
+    chatHistory.forEach(entry => {
+      y += 10;
+      doc.text("You: " + entry.question, 20, y);
+      y += 7;
+      doc.text("Cloudi: " + entry.answer, 20, y, { maxWidth: 170 });
+    });
+
+    doc.save("Cloudi_Chat_History.pdf");
+
+    if (!chatHistory.length) {
+    alert("No chat history found to download!");
+    return;
+      }
+    }
+    window.onload = () => {
+      // Theme
+      const isDark = localStorage.getItem('darkMode') === 'true';
+      if (isDark) {
+        document.body.classList.add('dark');
+        document.getElementById("theme-toggle").textContent = "☀️";
+      }
+
+      // Voice toggle
+      const voiceEnabled = localStorage.getItem("cloudiMuted") !== "true";
+      const voiceBtn = document.getElementById("voice-toggle");
+      voiceBtn.textContent = voiceEnabled ? "🔊" : "🔇";
+
+      // Typing → Answer
+      setTimeout(() => {
+        document.getElementById("cloudi-typing").style.display = "none";
+        document.getElementById("cloudi-response").style.display = "block";
+
+        if (voiceEnabled) {
+          speakAnswer(answerText);
+        }
+      }, 2000);
+    };
+
+    </script>
+
+    <script>
+      function copyLink() {
+      navigator.clipboard.writeText("https://yourdomain.com")
+        .then(() => alert("🔗 Link copied to clipboard!"))
+        .catch(err => alert("❌ Failed to copy link"));
+    }
+    </script>
+
+  <script>
+    function toggleVoice() {
+  const icon = document.getElementById("voice-toggle");
+  const muted = localStorage.getItem("cloudiMuted") === "true";
+  localStorage.setItem("cloudiMuted", (!muted).toString());
+  icon.textContent = muted ? "🔊" : "🔇";
+
+  // Stop any ongoing speech if being muted
+  if (!muted) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+  </script>
+
+
+    <!-- Footer -->
+    <footer class="cloudi-footer">
+      <p>Powered by <strong>Cloud Counselage</strong></p>
+      <p>© Vedika Dabade. All rights reserved.</p>
+    </footer>
+
+    
+  <!-- 🌐 Social Share Floating Bar -->
+  <div class="social-share">
+    <p>Share</p>
+    <div class="social-icons">
+      <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.url }}" class="facebook" target="_blank" rel="noopener" title="Share on Facebook">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+      <a href="https://twitter.com/intent/tweet?url={{ request.url }}" class="twitter" target="_blank" rel="noopener" title="Share on X">
+        <i class="fab fa-x-twitter"></i>
+      </a>
+      <a href="https://api.whatsapp.com/send?text={{ request.url }}" class="whatsapp" target="_blank" rel="noopener" title="Share on WhatsApp">
+        <i class="fab fa-whatsapp"></i>
+      </a>
+      <a href="https://www.instagram.com/" class="instagram" target="_blank" rel="noopener" title="Instagram (Placeholder)">
+        <i class="fab fa-instagram"></i>
+      </a>
+      <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.url }}" class="linkedin" target="_blank" rel="noopener" title="Share on LinkedIn">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+      <a href="#" onclick="copyPageLink()" class="share" title="Copy Link">
+        <i class="fas fa-link"></i>
+      </a>
+    </div>
+  </div>
+
+
+  </body>
+  </html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloudi ☁️ - SMS History</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> 
+</head>
+<body class="light">
+
+  <!-- 🌙 Theme Toggle Button -->
+  <div class="theme-toggle-container">
+    <button id="themeToggle" class="theme-toggle" type="button">🌙</button>
+  </div>
+
+  <h1 class="cloudi-title">Cloudi's ☁️ SMS Logs </h1>
+
+  <div class="sms-container">
+    {% if sms_history %}
+      {% for sms in sms_history %}
+        <div class="sms-entry">
+          <p><strong>{{ sms.timestamp }}</strong></p>
+          <p><strong>To:</strong> {{ sms.phone }}</p>
+          <p><strong>Message:</strong> {{ sms.message }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No SMS history found. 📨</p>
+    {% endif %}
+  </div>
+
+  <!-- 📥 Download Buttons -->
+  <div class="download-buttons">
+  <button onclick="downloadSMSPDF()">📄 Download PDF</button>
+  <button onclick="downloadSMSCSV()">📊 Download CSV</button>
+</div>
+
+  <!-- 📋 Clear SMS Button -->
+  <div class="clear-sms-container">
+  <form action="/clear-sms-logs" method="POST" onsubmit="return confirm('Are you sure you want to delete all SMS logs?');">
+    <button type="submit" class="copy-btn danger-btn">🗑️ Clear SMS Logs</button>
+  </form>
+</div>
+
+  <!-- 🔙 Back Link -->
+  <div class="centered-link">
+    <a href="/">⬅️ Back to Home</a>
+  </div>
+
+  <!-- 🌗 Toggle Script -->
+  <script>
+    const body = document.body;
+    const toggleBtn = document.getElementById('themeToggle');
+
+    // Apply saved preference or system theme
+    const savedTheme = localStorage.getItem('darkMode');
+    if (savedTheme === 'true' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      body.classList.add('dark');
+      toggleBtn.textContent = "☀️";
+    } else {
+      body.classList.add('light');
+      toggleBtn.textContent = "🌙";
+    }
+
+    toggleBtn.addEventListener('click', () => {
+      body.classList.toggle('dark');
+      body.classList.toggle('light');
+      const isDark = body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+      toggleBtn.textContent = isDark ? "☀️" : "🌙";
+    });
+  </script>
+
+  <script>
+  // Pass sms_history to JS as a JSON object
+  const smsHistory = JSON.parse('{{ sms_history|tojson|default("[]", true)|escapejs }}');
+
+  function downloadSMSPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 20;
+    doc.setFontSize(16);
+    doc.text("Cloudi - SMS History", 20, y);
+    y += 10;
+
+    smsHistory.forEach(sms => {
+      doc.setFontSize(12);
+      doc.text(`Time: ${sms.timestamp}`, 10, y); y += 7;
+      doc.text(`To: ${sms.phone}`, 10, y); y += 7;
+      doc.text(`Msg: ${sms.message}`, 10, y); y += 10;
+    });
+
+    doc.save("Cloudi_SMS_History.pdf");
+  }
+
+  function downloadSMSCSV() {
+    let csv = "Timestamp,Phone,Message\n";
+
+    smsHistory.forEach(sms => {
+      // Escape double quotes in message
+      const safeMsg = sms.message.replace(/"/g, '""');
+      csv += `"${sms.timestamp}","${sms.phone}","${safeMsg}"\n`;
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Cloudi_SMS_History.csv";
+    link.click();
+  }
+</script>
+
+</body>
+</html>

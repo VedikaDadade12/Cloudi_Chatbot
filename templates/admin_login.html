@@ -1,0 +1,43 @@
+<!-- Admin Login Page Template -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloudi Admin Login ☁️</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- 🌙 Theme Toggle -->
+  <div class="theme-toggle-container">
+    <button id="themeToggle" class="theme-toggle">🌙</button>
+  </div>
+
+  <div class="admin-container">
+    <h2>Cloudi Admin Login ☁️</h2>
+    <form method="POST" action="/admin/login">
+      <input type="text" name="username" placeholder="Username" required /><br />
+      <input type="password" name="password" placeholder="Password" required /><br />
+      <button type="submit"> Login</button>
+    </form>
+  </div>
+
+  
+  <script>
+    const toggleBtn = document.getElementById('themeToggle');
+    const isDark = localStorage.getItem('darkMode') === 'true';
+    document.body.classList.toggle('dark', isDark);
+    toggleBtn.textContent = isDark ? '☀️' : '🌙';
+
+    toggleBtn.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDarkMode = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDarkMode);
+      toggleBtn.textContent = isDarkMode ? '☀️' : '🌙';
+    });
+  </script>
+
+</body>
+</html>

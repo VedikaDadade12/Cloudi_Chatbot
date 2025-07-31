@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloudi Assistant ☁️</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <style>
+    /* Floating Button */
+    #chat-toggle {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background-color: #00acc1;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      font-size: 28px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      z-index: 9999;
+    }
+
+    /* Chat Window */
+    #chat-window {
+      display: none;
+      position: fixed;
+      bottom: 100px;
+      right: 30px;
+      width: 350px;
+      max-height: 80%;
+      background-color: white;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      padding: 20px;
+      z-index: 9998;
+    }
+
+    #chat-window input[type="text"] {
+      width: 75%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    #chat-window input[type="submit"] {
+      padding: 10px 15px;
+      border: none;
+      background-color: #00acc1;
+      color: white;
+      border-radius: 10px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="chat-toggle">💬</button>
+
+  <div id="chat-window">
+    <form action="/chat" method="post">
+      <input type="text" name="message" placeholder="Ask Cloudi...">
+      <input type="submit" value="Send">
+    </form>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById("chat-toggle");
+    const chatWindow = document.getElementById("chat-window");
+
+    toggleBtn.onclick = () => {
+      chatWindow.style.display = chatWindow.style.display === "block" ? "none" : "block";
+    };
+  </script>
+</body>
+</html>

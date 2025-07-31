@@ -1,0 +1,709 @@
+
+/* Style for the Cloudi Chatbot Interface */
+body {
+  font-family: 'Segoe UI', 'Segoe UI Emoji', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to right, #e0f7fa, #ffffff);
+  padding: 40px;
+  color: #333;
+  text-align: center;
+  margin: 0;
+  transition: background-color 0.3s, color 0.3s;
+  word-wrap: break-word;
+  overflow-x: hidden;
+
+
+}
+
+h1 {
+  font-size: 2.2em;
+  color: #006064;
+  margin-bottom: 10px;
+}
+
+p {
+  color: #555;
+  font-size: 1.1em;
+}
+
+form {
+  margin-top: 30px;
+}
+
+input[type="text"] {
+  width: 70%;
+  padding: 12px;
+  border: 2px solid #b2ebf2;
+  border-radius: 12px;
+  font-size: 1em;
+  outline: none;
+}
+
+input[type="submit"] {
+  padding: 12px 24px;
+  background-color: #00acc1;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1em;
+  cursor: pointer;
+  margin-left: 10px;
+  transition: 0.3s ease;
+}
+
+input[type="submit"]:hover {
+  background-color: #00838f;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* Style for the chat messages */
+.footer {
+  margin-top: 60px;
+  font-size: 0.9em;
+  color: #aaa;
+}
+.chat-container {
+  max-width: 600px;
+  margin: 40px auto;
+  text-align: left;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.user-question {
+  background-color: #fff8dc;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border-left: 6px solid #ffb300;
+}
+
+.cloudi-response {
+  background-color: #e0f7fa;
+  padding: 15px;
+  border-radius: 12px;
+  border-left: 6px solid #00acc1;
+  position: relative;
+  padding-left: 60px;
+}
+
+.cloudi-avatar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 30px;
+}
+
+.footer {
+  margin-top: 60px;
+  font-size: 0.9em;
+  color: #aaa;
+  text-align: center;
+}
+
+/* Typing Dots Animation */
+.typing-dots .dot {
+  animation: blink 1s infinite;
+}
+
+.typing-dots .dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots .dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 0; }
+  50% { opacity: 1; }
+}
+
+/* Dark Mode Styles */
+
+body.dark {
+  background: #121212;
+  color: #eee;
+}
+
+body.dark h1 {
+  color: #80deea;
+}
+
+body.dark .user-question {
+  background-color: #333;
+  border-left-color: #ffc107;
+  color: #f5f5f5;
+}
+
+body.dark .cloudi-response {
+  background-color: #263238;
+  border-left-color: #00bcd4;
+  color: #fff;
+}
+
+body.dark input[type="text"],
+body.dark input[type="submit"] {
+  background-color: #424242;
+  color: #eee;
+  border-color: #00acc1;
+}
+
+body.dark input[type="submit"]:hover {
+  background-color: #0097a7;
+}
+
+body.dark a {
+  color: #4fc3f7;
+}
+
+/* Optional - style scrollbars */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: transparent;
+}
+body::-webkit-scrollbar-thumb {
+  background-color: #00acc1;
+  border-radius: 10px;
+}
+
+body.dark .faq-question {
+  background-color: #37474f;
+  color: #eee;
+}
+
+body.dark .faq-question:hover {
+  background-color: #455a64;
+}
+
+body.dark .faq-answer {
+  background-color: #263238;
+}
+
+/* Button Styles */
+
+input[type="submit"],
+button {
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: 0.3s ease;
+}
+
+button:hover,
+input[type="submit"]:hover {
+  transition: transform 0.2s ease, background-color 0.3s ease;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* FAQ Section Styles */
+
+.faq-item {
+  margin-bottom: 15px;
+}
+
+.faq-question {
+  cursor: pointer;
+  background-color: #f1f1f1;
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-weight: bold;
+  color: #333;
+  transition: background 0.3s;
+}
+
+
+.faq-question:hover {
+  background-color: #e0e0e0;
+}
+
+.faq-answer {
+  display: none;
+  margin-top: 5px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+
+
+/* User Question Styles */
+.user-question {
+  display: flex;
+  align-items: center;
+  background-color: #fff8dc;
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  border-left: 6px solid #ffb300;
+}
+
+.user-avatar {
+  font-size: 30px;
+  margin-right: 12px;
+}
+
+.username {
+  font-size: 0.8em;
+  color: #888;
+  margin-top: 5px;
+}
+
+/* Cloudi Response Styles */
+.copy-btn {
+  margin-top: 10px;
+  background-color: #32577c;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9em;
+  cursor: pointer;
+}
+.copy-btn:hover {
+  background-color: #617b97;
+}
+
+/* Feedback Section Styles */
+.feedback {
+  margin-top: 12px;
+  font-size: 0.9em;
+  color: #aaa;
+}
+.feedback button {
+  background: none;
+  border: none;
+  font-size: 1.2em;
+  cursor: pointer;
+  margin: 0 5px;
+}
+.feedback button:hover {
+  transform: scale(1.1);
+}
+
+/* Social Bar Styles */
+.bottom-social-bar {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 10px;
+  background-color: transparent;
+}
+
+.bottom-social-bar span {
+  font-weight: bold;
+  color: #555;
+  margin-right: 8px;
+}
+
+.bottom-social-bar .social-icon {
+  width: 38px;
+  height: 38px;
+  background-color: #ddd;
+  color: white;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 38px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bottom-social-bar .social-icon:hover {
+  transform: scale(1.1);
+}
+/* Share Section */
+.social-share {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.social-share p {
+  color: #888;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.social-icons a {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: white;
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.social-icons a:hover {
+  transform: scale(1.1);
+}
+
+/* Brand Colors */
+.social-icons a.facebook { background-color: #3b5998; }
+.social-icons a.twitter { background-color: #000000; } /* X logo, black */
+.social-icons a.whatsapp { background-color: #25d366; }
+.social-icons a.instagram { background-color: #e1306c; }
+.social-icons a.linkedin { background-color: #0077b5; }
+.social-icons a.share { background-color: #555; }
+
+/* SMS Log Styles */
+
+.sms-container {
+    max-width: 900px;
+    margin: auto;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    transition: background 0.3s;
+}
+
+.sms-entry {
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 10px;
+    background: #d9f2f9;
+    border-left: 5px solid #00bcd4;
+}
+
+.sms-entry p {
+    margin: 0.2rem 0;
+}
+
+.timestamp {
+    font-size: 0.8rem;
+    color: #666;
+
+}
+
+.theme-toggle-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+.theme-toggle {
+  background-color: #ffffff;
+  color: #333;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+.theme-toggle:hover {
+  transform: rotate(20deg);
+}
+body.dark .theme-toggle {
+  background-color: #333;
+  color: #fdd835;
+}
+
+/* Chat Bubble Styles */
+.chat-bubble {
+  display: flex;
+  max-width: 80%;
+  padding: 12px;
+  margin: 12px auto;
+  border-radius: 16px;
+  background: #e0f7fa;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  animation: fadeInUp 0.6s ease-in-out;
+}
+
+.chat-bubble .avatar {
+  font-size: 28px;
+  margin-right: 12px;
+  align-self: flex-start;
+}
+
+.chat-bubble .bubble-content {
+  flex: 1;
+}
+
+.chat-bubble.user {
+  background-color: #fff3e0;
+  border-left: 5px solid #ffa726;
+  justify-content: flex-end;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.chat-bubble.user .avatar {
+  margin-left: 12px;
+  margin-right: 0;
+}
+
+.chat-bubble.cloudi {
+  background-color: #e3f2fd;
+  border-left: 5px solid #42a5f5;
+  justify-content: flex-start;
+}
+
+body.dark .chat-bubble.cloudi {
+  background-color: #263238;
+  color: #eee;
+  border-left-color: #00bcd4;
+}
+
+body.dark .chat-bubble.user {
+  background-color: #424242;
+  border-left-color: #ffc107;
+  color: #fff;
+}
+
+@keyframes fadeInUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Admin Login Styles */
+.admin-login {
+  max-width: 400px;
+  margin: 80px auto;
+  padding: 2rem;
+  border-radius: 12px;
+  background: #e3f2fd;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  animation: fadeIn 0.8s ease-in-out;
+  text-align: center;
+}
+
+body.dark .admin-login {
+  background: #1e1e1e;
+  color: #f5f5f5;
+}
+
+.admin-login h2 {
+  margin-bottom: 1rem;
+  color: #0077b6;
+}
+
+body.dark .admin-login h2 {
+  color: #90caf9;
+}
+
+.admin-login input {
+  width: 90%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 2px solid #00bcd4;
+  border-radius: 10px;
+  font-size: 1em;
+}
+
+.admin-login button {
+  width: 100%;
+  padding: 12px;
+  background-color: #0077b6;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.admin-login button:hover {
+  background-color: #006494;
+}
+
+
+/* Admin SMS Log Styles */
+
+.admin-sms-log {
+  max-width: 90%;
+  margin: 40px auto;
+  border-radius: 12px;
+  background: #ffffff;
+  padding: 20px;
+  overflow-x: auto;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+body.dark .admin-sms-log {
+  background: #222;
+  color: #eee;
+}
+
+.admin-sms-log table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-sms-log th, .admin-sms-log td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+.admin-sms-log th {
+  background-color: #00acc1;
+  color: white;
+}
+
+body.dark .admin-sms-log th {
+  background-color: #0097a7;
+}
+
+.admin-sms-log td .delete-btn {
+  background-color: #e53935;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.admin-sms-log td .delete-btn:hover {
+  background-color: #c62828;
+}
+
+
+
+/* Mobile Friendly */
+@media (max-width: 600px) {
+  .bottom-social-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .bottom-social-bar span {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 600px) {
+  .sms-container {
+    padding: 1rem;
+  }
+}
+
+/* Responsive: hide on small screens or make horizontal if needed */
+@media (max-width: 600px) {
+  .social-share {
+    flex-direction: row;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 10px 0;
+    border-top: 1px solid #ccc;
+  }
+
+  .social-share p {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  input[type="text"] {
+    width: 90%;
+  }
+
+  .chat-container {
+    padding: 0 10px;
+  }
+
+  .copy-btn, .feedback button {
+    font-size: 1em;
+    padding: 8px 14px;
+  }
+
+  .cloudi-avatar, .user-avatar {
+    font-size: 24px;
+  }
+
+  .faq-question {
+    font-size: 0.95em;
+  }
+}
+/* Theme Toggle Button Styles */
+#theme-toggle {
+  background-color: white;
+  color: #333;
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  margin-right: 8px; /* spacing between theme and volume */
+}
+
+#theme-toggle:hover {
+  transform: scale(1.05);
+}
+
+body.dark #theme-toggle {
+  background-color: #333;
+  color: #fdd835; /* sun yellow in dark mode */
+}
+
+.button-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* spacing between buttons */
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+
+
+/* Animation for fade-in effect */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Link Styles */
+a {
+  text-decoration: none;
+  color: #007BFF;
+  display: inline-block;
+  margin-top: 30px;
+  font-weight: bold;
+}

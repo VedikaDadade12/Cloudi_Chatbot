@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloudi ☁️ - Your Internship Assistant</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+  
+   <h1>{{ intro_message }}</h1>
+   <p>{{ sub_message }}</p>
+
+<button id="theme-toggle" onclick="toggleDarkMode()">
+  🌙
+</button>
+
+<button id="muteToggle" class="theme-toggle" type="button">🔊</button>
+
+
+
+<form action="/chat" method="post">
+
+  <label for="personality">Choose Cloudi's Mood:</label><br>
+  <select name="personality" id="personality">
+    <option value="friendly">😇 Friendly</option>
+    <option value="sassy">😎 Sassy</option>
+    <option value="formal" selected>📚 Formal</option>
+  </select>
+  <br><br>
+
+  <input type="text" id="message" name="message" placeholder="Type your question or click the mic 🎤">
+  <input type="submit" value="Ask Cloudi">
+  <button type="button" onclick="startListening()">🎤</button>
+</form>
+
+
+
+<script>
+function startListening() {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onresult = function (event) {
+  const transcript = event.results[0][0].transcript;
+  document.getElementById("message").value = transcript;
+  document.querySelector("form").submit(); // 👈 this line auto-submits
+};
+
+  recognition.onerror = function (event) {
+    alert("Speech recognition error: " + event.error);
+  };
+
+  recognition.start();
+}
+</script>
+
+
+<script>
+  function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+
+    // Change icon based on theme
+    const isDark = document.body.classList.contains('dark');
+    document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
+
+    // Save user preference
+    localStorage.setItem('darkMode', isDark);
+  }
+
+  // Load preference on page load
+  window.onload = () => {
+    const prefersDark = localStorage.getItem('darkMode') === 'true';
+    if (prefersDark) {
+      document.body.classList.add('dark');
+      document.getElementById("theme-toggle").textContent = "☀️";
+    } else {
+      document.getElementById("theme-toggle").textContent = "🌙";
+    }
+  };
+</script>
+
+<script>
+  const muteBtn = document.getElementById('muteToggle');
+  if (muteBtn) {
+    // Set icon on page load
+    const isMuted = localStorage.getItem('cloudiMuted') === 'true';
+    muteBtn.textContent = isMuted ? '🔇' : '🔊';
+
+    muteBtn.addEventListener('click', () => {
+      const muted = localStorage.getItem('cloudiMuted') === 'true';
+      const newState = !muted;
+      localStorage.setItem('cloudiMuted', newState);
+      muteBtn.textContent = newState ? '🔇' : '🔊';
+    });
+  }
+</script>
+
+ <footer class="footer">
+        <p>Powered by <strong>Cloud Conselage</strong></p>
+        <p>© Vedika Dabade. All rights reserved.</p>
+    </footer>
+
+
+</body>
+</html>
