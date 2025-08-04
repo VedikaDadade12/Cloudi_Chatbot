@@ -1,109 +1,112 @@
+<!-- This is Cloudi's chat page -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cloudi ☁️ - Your Internship Assistant</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 
 <body>
-  
-   <h1>{{ intro_message }}</h1>
-   <p>{{ sub_message }}</p>
 
-<button id="theme-toggle" onclick="toggleDarkMode()">
-  🌙
-</button>
+  <h1 class="cloudi-title">{{ intro_message }}</h1>
+  <p class="cloudi-sub">{{ sub_message }}</p>
 
-<button id="muteToggle" class="theme-toggle" type="button">🔊</button>
+  <!-- Theme + Voice Toggles -->
+  <div class="toggle-container">
+    <button id="theme-toggle" onclick="toggleDarkMode()">🌙</button>
+    <button id="muteToggle" class="theme-toggle">🔊</button>
+  </div>
 
-
-
-<form action="/chat" method="post">
-
-  <label for="personality">Choose Cloudi's Mood:</label><br>
-  <select name="personality" id="personality">
-    <option value="friendly">😇 Friendly</option>
-    <option value="sassy">😎 Sassy</option>
-    <option value="formal" selected>📚 Formal</option>
-  </select>
-  <br><br>
-
-  <input type="text" id="message" name="message" placeholder="Type your question or click the mic 🎤">
-  <input type="submit" value="Ask Cloudi">
-  <button type="button" onclick="startListening()">🎤</button>
-</form>
+  <!-- Chat Analytics -->
+  <div class="analytics-link">
+  <a href="/analytics" class="analytics-btn">📊 View Analytics</a>
+</div>
 
 
+  <!-- Chat Form -->
+  <form action="/chat" method="POST" class="chat-form">
+    <label for="personality">Choose Cloudi's Mood:</label><br />
+    <select name="personality" id="personality">
+      <option value="friendly">😇 Friendly</option>
+      <option value="sassy">😎 Sassy</option>
+      <option value="formal" selected>📚 Formal</option>
+    </select>
 
-<script>
-function startListening() {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
+    <div class="input-group">
+      <input
+        type="text"
+        id="message"
+        name="message"
+        placeholder="Type your question or click the mic 🎤"
+        required
+      />
+      <button type="submit">Ask Cloudi</button>
+      <button type="button" onclick="startListening()">🎤</button>
+    </div>
+  </form>
 
-  recognition.onresult = function (event) {
-  const transcript = event.results[0][0].transcript;
-  document.getElementById("message").value = transcript;
-  document.querySelector("form").submit(); // 👈 this line auto-submits
-};
+  <!-- Footer -->
+  <footer class="cloudi-footer">
+    <p>Powered by <strong>Cloud Counselage</strong></p>
+    <p>© Vedika Dabade. All rights reserved.</p>
+  </footer>
 
-  recognition.onerror = function (event) {
-    alert("Speech recognition error: " + event.error);
-  };
-
-  recognition.start();
-}
-</script>
-
-
-<script>
-  function toggleDarkMode() {
-    document.body.classList.toggle('dark');
-
-    // Change icon based on theme
-    const isDark = document.body.classList.contains('dark');
-    document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
-
-    // Save user preference
-    localStorage.setItem('darkMode', isDark);
-  }
-
-  // Load preference on page load
-  window.onload = () => {
-    const prefersDark = localStorage.getItem('darkMode') === 'true';
-    if (prefersDark) {
-      document.body.classList.add('dark');
-      document.getElementById("theme-toggle").textContent = "☀️";
-    } else {
-      document.getElementById("theme-toggle").textContent = "🌙";
+  <!-- Scripts -->
+  <script>
+    // Dark Mode Toggle
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      document.getElementById('theme-toggle').textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('darkMode', isDark);
     }
-  };
-</script>
 
-<script>
-  const muteBtn = document.getElementById('muteToggle');
-  if (muteBtn) {
-    // Set icon on page load
-    const isMuted = localStorage.getItem('cloudiMuted') === 'true';
-    muteBtn.textContent = isMuted ? '🔇' : '🔊';
+    // Apply user theme preference on load
+    window.onload = () => {
+      const prefersDark = localStorage.getItem('darkMode') === 'true';
+      if (prefersDark) {
+        document.body.classList.add('dark');
+        document.getElementById('theme-toggle').textContent = '☀️';
+      }
 
-    muteBtn.addEventListener('click', () => {
-      const muted = localStorage.getItem('cloudiMuted') === 'true';
-      const newState = !muted;
-      localStorage.setItem('cloudiMuted', newState);
-      muteBtn.textContent = newState ? '🔇' : '🔊';
-    });
-  }
-</script>
+      // Voice toggle icon
+      const isMuted = localStorage.getItem('cloudiMuted') === 'true';
+      document.getElementById('muteToggle').textContent = isMuted ? '🔇' : '🔊';
+    };
 
- <footer class="footer">
-        <p>Powered by <strong>Cloud Conselage</strong></p>
-        <p>© Vedika Dabade. All rights reserved.</p>
-    </footer>
+    // Voice toggle button
+    const muteBtn = document.getElementById('muteToggle');
+    if (muteBtn) {
+      muteBtn.addEventListener('click', () => {
+        const muted = localStorage.getItem('cloudiMuted') === 'true';
+        localStorage.setItem('cloudiMuted', !muted);
+        muteBtn.textContent = muted ? '🔊' : '🔇';
+      });
+    }
 
+    // Speech-to-Text
+    function startListening() {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onresult = function (event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('message').value = transcript;
+        document.querySelector('form').submit();
+      };
+
+      recognition.onerror = function (event) {
+        alert('Speech recognition error: ' + event.error);
+      };
+
+      recognition.start();
+    }
+  </script>
 
 </body>
 </html>

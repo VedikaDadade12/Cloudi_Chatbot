@@ -1,0 +1,20 @@
+{
+    "total_chats": 5,
+    "sources": {
+        "web": 5,
+        "sms": 0,
+        "whatsapp": 0,
+        "facebook": 0,
+        "instagram": 0
+    },
+    "personalities": {
+        "formal": 3,
+        "friendly": 2,
+        "motivational": 0
+    },
+    "feedback": {
+        "positive": 0,
+        "negative": 0,
+        "written": 0
+    }
+}

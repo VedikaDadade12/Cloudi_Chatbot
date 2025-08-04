@@ -1,4 +1,3 @@
-
 /* Style for the Cloudi Chatbot Interface */
 body {
   font-family: 'Segoe UI', 'Segoe UI Emoji', Tahoma, Geneva, Verdana, sans-serif;
@@ -269,22 +268,91 @@ input[type="submit"]:hover {
   background-color: #617b97;
 }
 
-/* Feedback Section Styles */
-.feedback {
-  margin-top: 12px;
-  font-size: 0.9em;
-  color: #aaa;
+/* Feedback Button */
+
+.feedback-button {
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 8px; 
 }
-.feedback button {
-  background: none;
+
+.feedback-button button {
+  background-color: #135e81;
+  color: white;
   border: none;
-  font-size: 1.2em;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 14px;
   cursor: pointer;
-  margin: 0 5px;
+  transition: background-color 0.3s ease;
 }
-.feedback button:hover {
-  transform: scale(1.1);
+
+.feedback-button button:hover {
+  background-color: #1d77b3;
 }
+
+/* Modal Styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 20;
+  padding-top: 80px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.6);
+}
+
+.modal-content {
+  background-color: #ffffff;
+  margin: auto;
+  padding: 30px;
+  border: 1px solid #888;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 400px;
+  box-shadow: 0px 5px 15px rgba(0,0,0,0.3);
+}
+
+.modal-content h3 {
+  margin-top: 0;
+}
+
+.modal-content textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  resize: vertical;
+  margin-bottom: 10px;
+}
+
+.modal-content button {
+  background-color: #238491;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #214d69;
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover {
+  color: #000;
+}
+
 
 /* Social Bar Styles */
 .bottom-social-bar {
@@ -592,6 +660,64 @@ body.dark .admin-sms-log th {
   background-color: #c62828;
 }
 
+/* Analytics Link Styles */
+.analytics-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.analytics-btn {
+  background-color: #308aa5;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.analytics-btn:hover {
+  background-color: #1f7180;
+}
+
+
+/* Other Enhancements */
+.chat-form {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.input-group {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.cloudi-title {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.cloudi-sub {
+  text-align: center;
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+}
+
+.toggle-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.cloudi-footer {
+  margin-top: 50px;
+  text-align: center;
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
+
 
 
 /* Mobile Friendly */
@@ -613,6 +739,23 @@ body.dark .admin-sms-log th {
   .sms-container {
     padding: 1rem;
   }
+}
+/* Chat Container Styles */
+.chat-container {
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  background: #f9f9f9;
+  margin-bottom: 20px;
+}
+
+.chat-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.chat-container .chat-bubble {
+  margin-bottom: 12px;
 }
 
 /* Responsive: hide on small screens or make horizontal if needed */

@@ -49,11 +49,13 @@ if not app.secret_key:
 
 # ----------- Utility Functions -----------
 
+# Normalize text by lowercasing, stripping whitespace, and removing punctuation
 def normalize(text):
     text = text.lower().strip()
     text = text.translate(str.maketrans('', '', string.punctuation))
     return " ".join(text.split())
 
+# Stylize the response with a random prefix
 def stylize_response(answer):
     prefixes = [
         "Sure thing! Here's what I found for you ☁️\n\n",
@@ -62,6 +64,7 @@ def stylize_response(answer):
     ]
     return random.choice(prefixes) + answer
 
+# Log unknown questions to a JSON file
 def log_unknown_question(question):
     log_file = 'learning_log.json'
     log_entry = {
@@ -81,6 +84,7 @@ def log_unknown_question(question):
             file.seek(0)
             json.dump(data, file, indent=4)
 
+# Apply personality to the response based on mood
 def apply_personality(response, mood, prefix=True):
     if prefix and random.random() < 0.5:
         response = stylize_response(response)
@@ -95,6 +99,7 @@ def apply_personality(response, mood, prefix=True):
     else:
         return response
 
+# Get Cloudi's response based on user input
 def get_cloudi_response(user_input, mood="formal"):
     normalized_input = normalize(user_input)
     casual_keys = list(casual_replies.keys())
@@ -114,6 +119,7 @@ def get_cloudi_response(user_input, mood="formal"):
     print("🤖 GPT fallback:", gpt_reply)
     return apply_personality(gpt_reply, mood, prefix=True)
 
+# Get fallback response from GPT
 def get_fallback_from_gpt(prompt):
     try:
         response = openai.ChatCompletion.create(
@@ -128,6 +134,49 @@ def get_fallback_from_gpt(prompt):
         print("GPT error:", e)
         return "Oops! I'm having trouble reaching my brain right now. ☁️💤"
 
+
+casual_replies = {
+    "hi": "Hey there! 👋",
+    "hello": "Hi! How can I help you today? 😊",
+    "hey": "Heyy! I'm here for you ☁️",
+    "how are you": "I'm just a cloud, but thanks for asking! ☁️ How about you?",
+    "what's up": "Not much, just floating around! ☁️ What's up with you?",
+    "help": "Sure! What do you need help with? 🤔",
+    "thanks": "You're welcome! 😊 If you need anything else, just ask!",
+    "thank you": "No problem! I'm here to help! 😊",
+    "bye": "Goodbye! Take care! 👋",
+    "goodbye": "See you later! ☁️",
+    "good morning": "Good morning! ☀️ Let's make today productive!",
+    "good evening": "Good evening! 🌙 How was your day?"
+}
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    original_input = request.form['message'].strip()
+    mood = request.form.get("personality") or session.get("personality", "formal")
+    session["personality"] = mood
+
+    lower_input = original_input.lower()
+    is_casual = lower_input in casual_replies
+
+    if is_casual:
+        response = casual_replies[lower_input]
+    else:
+        response = get_cloudi_response(original_input, mood)
+
+    update_analytics(mood)
+    session.setdefault("history", []).append({"question": original_input, "answer": response})
+    session.modified = True
+
+    return render_template(
+        "response.html",
+        question=original_input,
+        answer=response,
+        history=session["history"],
+        is_casual=is_casual
+    )
+
+# Save SMS log to a JSON file
 def save_sms_log(phone, message):
     log = {
         "phone": phone,
@@ -145,53 +194,61 @@ def save_sms_log(phone, message):
     with open("sms_logs.json", "w") as file:
         json.dump(logs, file, indent=4)
 
+# Update analytics data
+def update_analytics(mood, source="web"):
+    try:
+        with open("analytics.json", "r") as f:
+            data = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        data = {
+            "total_chats": 0,
+            "sources": {"web": 0},
+            "personalities": {"formal": 0, "friendly": 0, "motivational": 0, "sassy": 0},
+            "feedback": {"positive": 0, "negative": 0}
+        }
+
+    data["total_chats"] += 1
+    data["sources"][source] = data["sources"].get(source, 0) + 1
+    data["personalities"][mood] = data["personalities"].get(mood, 0) + 1
+
+    with open("analytics.json", "w") as f:
+        json.dump(data, f, indent=4)
+
 # ----------- Data Loading -----------
 
 with open('faq_data.json', 'r') as file:
     raw_faq = json.load(file)
     faq = {normalize(k): v for k, v in raw_faq.items()}
 
-casual_replies = {
-    "hi": "Heyyy! 👋 I'm Cloudi ☁️. How can I help you today?",
-    "hello": "Hello there, friend! ☁️✨",
-    "hey": "Hey hey hey! 🤗 What's up?",
-    "how are you": "I'm all clouds and code ☁️💻 — doing great!"
-}
 
 # ----------- Routes -----------
 
+# Home Page
 @app.route('/')
 def home():
     return render_template("chat.html", intro_message="Hi, I'm Cloudi ☁️!", sub_message="Ask anything about internships, IAC, domains, docs...")
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    original_input = request.form['message'].strip()
-    mood = request.form.get("personality") or session.get("personality", "formal")
-    session["personality"] = mood
 
-    response = get_cloudi_response(original_input, mood)
-    session.setdefault("history", []).append({"question": original_input, "answer": response})
-    session.modified = True
-    return render_template("response.html", question=original_input, answer=response, history=session["history"], is_casual=original_input.lower() in casual_replies)
-
+# Reset chat history
 @app.route('/reset')
 def reset():
     session.pop('history', None)
     return redirect(url_for('home'))
 
-@app.route("/admin/login", methods=["GET", "POST"])
+# Admin Routes
+@app.route("/admin-login", methods=["GET", "POST"])
 def admin_login():
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
-        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
+        if username == os.getenv("ADMIN_USERNAME") and password == os.getenv("ADMIN_PASSWORD"):
             session["admin_logged_in"] = True
-            return redirect("/admin/logs")
+            return redirect("/analytics")
         else:
-            return render_template("admin_login.html", error="Invalid credentials")
+            flash("Invalid credentials", "error")
     return render_template("admin_login.html")
 
+# Admin Logs
 @app.route('/sms-logs')
 def sms_logs():
     try:
@@ -201,16 +258,62 @@ def sms_logs():
         logs = []
     return render_template('sms_logs.html', logs=logs)
 
+# Admin Analytics
+@app.route("/analytics")
+def analytics():
+    if not session.get("admin_logged_in"):
+        return redirect("/admin-login")
+
+    with open("analytics.json", "r") as f:
+        data = json.load(f)
+
+    return render_template("analytics.html", analytics=data)
+
+# Clear SMS logs
 @app.route('/clear-sms-logs', methods=['POST'])
 def clear_sms_logs():
     with open('sms_logs.json', 'w') as f:
         json.dump([], f)
     return redirect(url_for('sms_logs'))
 
-@app.route("/logout")
+# Logout
+@app.route("/logout", methods=["POST"])
 def logout():
-    session.pop("admin", None)
-    return redirect(url_for("admin_login"))
+    session.pop("admin_logged_in", None)
+    return redirect("/admin-login")
+
+
+# Feedback Submission
+@app.route("/submit-feedback", methods=["POST"])
+def submit_feedback():
+    feedback = request.form.get("feedback")
+    question = request.form.get("question")
+    answer = request.form.get("answer")
+
+    feedback_entry = {
+        "question": question,
+        "answer": answer,
+        "feedback": feedback,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+    feedback_file = "feedback.json"
+    if os.path.exists(feedback_file):
+        with open(feedback_file, "r+") as f:
+            try:
+                data = json.load(f)
+            except json.JSONDecodeError:
+                data = []
+            data.append(feedback_entry)
+            f.seek(0)
+            json.dump(data, f, indent=4)
+    else:
+        with open(feedback_file, "w") as f:
+            json.dump([feedback_entry], f, indent=4)
+
+    flash("✅ Thanks for your feedback!")
+    return redirect(url_for("home"))
+
 
 # ----------- Webhooks -----------
 
@@ -324,6 +427,7 @@ def send_sms(to, message):
     requests.post(url, data=data, auth=(TWILIO_SID, TWILIO_TOKEN))
 
 # ----------- Run App -----------
-
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    from dotenv import load_dotenv
+    load_dotenv()
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
