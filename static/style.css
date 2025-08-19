@@ -2,9 +2,9 @@
 
 body {
   font-family: 'Segoe UI', 'Segoe UI Emoji', Tahoma, Geneva, Verdana, sans-serif;
-  background-color:linear-gradient(to right, #e0f7fa, #ffffff);
+  background-color:#e0f7fa;
   padding: 40px;
-  color: #333; 
+  color: #003344; 
   text-align: center;
   margin: 0;
   transition: background-color 0.3s, color 0.3s;

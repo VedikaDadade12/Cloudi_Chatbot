@@ -553,5 +553,5 @@ if __name__ == "__main__":
     print("🚀 Starting Cloudi Chatbot...")
     print(f"📚 FAQ entries: {len(faq)}")
     print(f"💬 Casual replies: {len(casual_replies)}")
-    
-#app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
+# app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
