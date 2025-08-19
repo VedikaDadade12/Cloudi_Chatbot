@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cloudi ☁️ Analytics Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 30px;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .dashboard-title {
+      font-size: 2.2em;
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--accent);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      padding: 20px;
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card h3 {
+      margin-top: 10px;
+      font-size: 1.2rem;
+    }
+
+    .card .value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--highlight);
+    }
+
+    .emoji {
+      font-size: 2rem;
+      margin-bottom: 5px;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      display: block;
+      text-align: center;
+      font-size: 1.1rem;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    /* Dark/light mode support */
+    :root {
+      --bg: #f0f8ff;
+      --card-bg: #ffffff;
+      --text: #222;
+      --accent: #4444cc;
+      --highlight: #2c84ff;
+    }
+
+    body.dark {
+      --bg: #1e1e2e;
+      --card-bg: #2e2e3e;
+      --text: #eee;
+      --accent: #99aaff;
+      --highlight: #66ccff;
+    }
+
+    #theme-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <button id="theme-toggle" onclick="toggleDarkMode()">🌙</button>
+
+  <h1 class="dashboard-title">📊 Cloudi's Analytics Dashboard ☁️</h1>
+
+  <div class="grid">
+    <div class="card">
+      <div class="emoji">💬</div>
+      <div class="value">{{ analytics.total_chats }}</div>
+      <h3>Total Chats</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🌐</div>
+      <div class="value">{{ analytics.sources.web }}</div>
+      <h3>Web Chats</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📱</div>
+      <div class="value">{{ analytics.sources.sms }}</div>
+      <h3>SMS</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🟢</div>
+      <div class="value">{{ analytics.sources.whatsapp }}</div>
+      <h3>WhatsApp</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📘</div>
+      <div class="value">{{ analytics.sources.facebook }}</div>
+      <h3>Facebook</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📸</div>
+      <div class="value">{{ analytics.sources.instagram }}</div>
+      <h3>Instagram</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🎭</div>
+      <div class="value">{{ analytics.personalities.formal }}</div>
+      <h3>Formal Mode</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">😊</div>
+      <div class="value">{{ analytics.personalities.friendly }}</div>
+      <h3>Friendly Mode</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">🚀</div>
+      <div class="value">{{ analytics.personalities.motivational }}</div>
+      <h3>Motivational Mode</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">👍</div>
+      <div class="value">{{ analytics.feedback.positive }}</div>
+      <h3>Positive Feedback</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">👎</div>
+      <div class="value">{{ analytics.feedback.negative }}</div>
+      <h3>Negative Feedback</h3>
+    </div>
+
+    <div class="card">
+      <div class="emoji">📝</div>
+      <div class="value">{{ analytics.feedback.written }}</div>
+      <h3>Written Feedback</h3>
+    </div>
+  </div>
+
+  <a href="/" class="back-btn">⬅️ Go Back to Chat</a>
+
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('darkMode', isDark);
+      document.getElementById("theme-toggle").textContent = isDark ? "☀️" : "🌙";
+    }
+
+    window.onload = () => {
+      const isDark = localStorage.getItem('darkMode') === 'true';
+      if (isDark) {
+        document.body.classList.add('dark');
+        document.getElementById("theme-toggle").textContent = "☀️";
+      }
+    }
+  </script>
+
+</body>
+</html>
