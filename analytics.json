@@ -1,20 +1,22 @@
 {
-    "total_chats": 5,
+    "total_chats": 9,
     "sources": {
-        "web": 5,
+        "web": 9,
         "sms": 0,
         "whatsapp": 0,
         "facebook": 0,
         "instagram": 0
     },
     "personalities": {
-        "formal": 3,
-        "friendly": 2,
+        "formal": 6,
+        "friendly": 3,
         "motivational": 0
     },
     "feedback": {
         "positive": 0,
         "negative": 0,
         "written": 0
-    }
+    },
+    "today_chats": 2,
+    "last_updated": "2025-08-11"
 }
